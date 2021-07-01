@@ -11,12 +11,12 @@ module.exports = async (req, res) => {
             const token = req.headers['authorization'].split(' ')[1];
             res.statusCode = 200;
 
-            const userId = req.body. ;          // TODO: get the user id from the request body
-            const eventId = req.body. ;         // TODO: get the event id from the request body
-            const eventDetails = req.body. ;    // TODO: get the calendar event details from the request body
+            // const userId = req.body. ;          // TODO: get the user id from the request body
+            const eventId = req.body.eventId ;         // TODO: get the event id from the request body
+            const eventDetails = req.body.eventDetails;    // TODO: get the calendar event details from the request body
             return res.end(JSON.stringify(await data.util.resWrapper(async () => {
                 // Call the function which updates a Google Calendar Event.
-                return await data.calendar.update(token, userId, eventId, eventDetails);
+                return await data.calendar.update(token, eventId, eventDetails); //Deleted parameter: useId
             })));
         } else {
             res.statusCode = 401;

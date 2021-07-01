@@ -3,6 +3,8 @@ const { OAuth2Client } = require('google-auth-library');
 const authConfig = require('./auth.config.json');
 const {google} = require('googleapis');
 
+const { parseISO } = require("date-fns");
+
 const calendar = {};
 
 /**
@@ -37,16 +39,51 @@ calendar.add = async (token, userId, eventDetails) => {
  * 
  * @returns New details of the Calendar Event that got updated
  */
- calendar.update = async (token, userId, eventId, eventDetails) => {
-    const client = new OAuth2Client(authConfig['client_id']);
+ calendar.update = async (token, eventId, eventDetails) => {
+    const client = new OAuth2Client(authConfig['client_id'], authConfig['client_secret']);
     client.setCredentials({
         access_token: token
     });
 
     const calendar = google.calendar({version: 'v3', auth: client});
     // TODO: implement the functionality here.
-    // return the New details of the updated Calendar event in the response body
-    return {};
+    const {
+        mySummary,
+        myDescription,
+        myDateIni,
+        myDateEnd,
+        myCalendarId
+    } = eventDetails;
+
+    var updateEvent = {
+        summary: mySummary,
+        description: myDescription,
+        start: {
+            dateTime: parseISO(myDateIni),
+            timeZone: 'America/New_York' //your Timezone
+        },
+        end: {
+            dateTime: parseISO(myDateEnd),
+            timeZone: 'America/New_York' //your Timezone
+        },
+    };
+
+    calendar.events.patch({
+        calendarId: myCalendarId,
+        eventId: eventId,
+        resource: updateEvent,
+    },
+        // return the New details of the updated Calendar event in the response body
+        function (err, updateEvent) {
+            if (err) {
+                console.log('There was an error contacting the Calendar service: ' + err);
+                return res.json(err);
+            }
+            console.log('Event created: %s', updateEvent.data.htmlLink);
+            console.log('Id: ', updateEvent.data.id);
+            return res.json(updateEvent);
+        }
+    );
 }
 
 module.exports = calendar;
