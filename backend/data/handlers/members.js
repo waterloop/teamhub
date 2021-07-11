@@ -9,7 +9,7 @@ const util = require('./util');
 const members = {};
 
 /**
- * Return all members (and their associated information) from the database.
+ * Return all members and their associated information.
  */
 members.getAll = async (fields, returnSubteamTaskList = false) => {
     return util.handleWrapper(async () => {
@@ -53,10 +53,12 @@ members.getAll = async (fields, returnSubteamTaskList = false) => {
 };
 
 /** 
- * Input arguments
- * body: Filters (ie. specific subteam, specific name, specific email) used to select certain member(s)
+ * @param {Object} body: selection criteria for selecting members to return (ie. {email: 'steven.x@waterloop.ca'} return the member with 'steven.x@waterloop.ca' as email)
+ * @param {Object} fields: specifies which fields to return
+ * @param {boolean} showToken: whether or not to return the access token and expiry date of token
+ * @param {boolean} returnSubteamTaskList: whether or not to return the tasks that should be completed by the member(s)
  * 
- * Return all members (and their associated information) that match the criteria specified in body.
+ * Returns all members (and their associated information) that match the filter criteria specified in input params
  */
 members.search = async (body, fields, showToken = false, returnSubteamTaskList = false) => {
     return util.handleWrapper(async () => {
@@ -127,8 +129,8 @@ members.search = async (body, fields, showToken = false, returnSubteamTaskList =
 /**
  * Assign a task to all members
  * 
- * filter: selection criteria for the member to assign the task to
- * body: the details describing the new task
+ * @param {Object} filter: selection criteria for selecting which members to give the new task to
+ * @param {Object} newTask: details describing the new task
  */
 members.assignTaskToAllMembers = async (filter, newTask) => {
     return util.handleWrapper(async () => {
@@ -139,7 +141,7 @@ members.assignTaskToAllMembers = async (filter, newTask) => {
 /**
  * Add a new member to the database
  * 
- * memberBody: details describing the new member
+ * @param {Object} memberBody: the new member's details
  */
 members.add = async (memberBody) => {
     return util.handleWrapper(async () => {
@@ -151,7 +153,7 @@ members.add = async (memberBody) => {
 /**
  * Delete members from the database
  * 
- * body: details that describe the members to be deleted
+ * @param {Object} body: details for selecting which member(s) to delete
  */
 members.delete = async (body) => {
     return util.handleWrapper(async () => {
@@ -196,13 +198,12 @@ members.updateAllMembers = async (body, options) => {
 /**
  * Update the status of a task for a single member
  * 
- * filter: selection criteria for the record to update -- Example) { _id: req.query.id, 
- *                                                                   "tasks": {
-                                                                        "$elemMatch": {
-                                                                            "_id": req.body.taskId
-                                                                        }
-                                                                    }}, 
- * body: contains the new status of the task           -- Exapmle) {"tasks.$.status": req.body.status}
+ * @param {Object} filter: Selection criteria for the member to update 
+    Example) {  _id: req.query.id, 
+                "tasks": { "$elemMatch": { "_id": req.body.taskId } }
+             }
+ * @param {Object} body:   The new status of the task          
+    Exapmle) { "tasks.$.status": req.body.status }
  */
 members.updateTaskStatus = async (filter, body) => {
     return util.handleWrapper(async () => {

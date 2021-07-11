@@ -33,8 +33,7 @@ auth.checkAnyUser = async (authHeader, res) => {
         return false;
     }
     const searchRes = await members.search({ token: authToken });
-    // TODO: test what happens when token expires
-    if (!searchRes || searchRes.length == 0 || searchRes[0].tokenExpiry >= Date.now()) {
+    if (!searchRes || searchRes.length == 0 || searchRes[0].tokenExpiry < Date.now()) {
         res.statusCode = 403;
         res.end('Token forbidden.');
         return false;

@@ -130,7 +130,6 @@ const MemberSchema = new Schema({
     },
     tokenExpiry: {
         type: Number,
-        select: false
     },
     tasks: {
         type: [Member_Task]

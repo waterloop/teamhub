@@ -21,7 +21,7 @@ const navItems = [
         name: 'Home', link: '/dashboard'
     },
     {
-        name: 'Teammates', link: '/'
+        name: 'My Team', link: '/'
     },
     {
         name: 'My Profile', link: '/settings'
